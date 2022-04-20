@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta charset="utf-8">
+  <title>Compile C to WebAssembly</title>
+  <script src="./webplayer/resource/WebPacket.js"></script>
+  <script src="./webplayer/resource/WebStream.js"></script>
+  <script src="./rtspclient/common.js"></script>
+  <script src="./webplayer/lib/libplayer.js"></script>
+  <script type="module">
+        import {Download} from "./webplayer/download.js";
+        import {PlayerController} from './webplayer/PlayerController.js';
+        playerController = new PlayerController("myCanvas",800,400);
+
+        Module.onRuntimeInitialized = async _ => {
+          console.log("libplayer load over");
+          download = new Download();
+      }
+  </script>
+  
+</head>
+
+<body>
+  <button onclick="PlayFile()">PlayFile</button>
+  <button onclick="PlayRtsp()">PlayRtsp</button>
+  <button onclick="TogglePause()">TogglePause</button>
+  <button onclick="Stop()">Stop</button>
+  <button onclick="speedUp()">speedUp</button>
+  <label id="speedValue">1.0</label>
+  <button onclick="speedDown()">speedDown</button>
+  <button onclick="startDownload()">download</button>
+
+  <div>
+    <canvas id="myCanvas" width="800" height="400" style="border:1px solid #d3d3d3;">您的浏览器不支持 HTML5 canvas 标签。</canvas>
+    <input id='file' type="file" onchange="upload(this)" />
+  </div>
+
+  <script >
+    var download;
+    var playerController;
+    let rtspurl = "rtsp://admin:MThd123456@172.18.3.139:554/h264/ch1/sub/av_stream"
+    // let rtspurl = "rtsp://admin:HK123456@192.168.12.16:554";
+
+    function upload(input) {
+      playerController.loadFile(input);
+    }
+
+    function PlayFile() {
+      playerController.PlayFile();
+      playerController.autoSpeed();
+    }
+
+    function PlayRtsp() {
+      playerController.PlayRtsp("ws://127.0.0.1:8082/websocket", rtspurl);
+      // playerController.autoSpeed();
+    }
+
+    function TogglePause(){
+      playerController.togglePause();
+    }
+
+    function Stop() {
+      playerController.stop();
+    }
+
+    function speedUp(){
+      var value = document.getElementById("speedValue").innerText;
+      value = (parseFloat(value) + parseFloat(1.0));
+      document.getElementById("speedValue").innerText = value
+      playerController.setScale(value);
+
+    }
+
+    function speedDown(){
+      var value = document.getElementById("speedValue").innerText;
+      value = (parseFloat(value) - parseFloat(1.0));
+      document.getElementById("speedValue").innerText = value
+      playerController.setScale(value);
+    }
+
+    function Screen(){
+      var canvas = document.getElementById('myCanvas');
+
+        if(!playerController.isFullScreen)
+        {
+            playerController.isFullScreen = true;    
+            playerController.canvasW = canvas.width;   
+            playerController.canvasH = canvas.height; 
+            canvas.style.width = window.innerWidth + "px";
+            canvas.style.height = window.innerHeight + "px";
+        }
+        else
+        {
+          playerController.isFullScreen = false;
+            canvas.style.width = playerController.canvasW + "px";
+            canvas.style.height = playerController.canvasH + "px";
+        }
+
+    }
+
+    function startDownload(){
+      download.startDownload("ws://192.168.1.70:8080/websocket", rtspurl);
+    }
+
+  </script>
+</body>
+
+</html>

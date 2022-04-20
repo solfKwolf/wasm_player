@@ -1,0 +1,28 @@
+<!DOCTYPE HTML>
+<html>
+   <head>
+   <meta charset="utf-8">
+   <script type="module" src="../rtspcient.js"></script>
+   <script src="../URI.js"></script>
+   <script src="../base64.js"></script>
+   <script src="../md5.js"></script>
+   <script type="module" src="test.js"></script>
+   </head>
+
+   <body>
+      <input type="button" value="pause" onclick="mypause()" />
+      <input type="button" value="stop" onclick="stop()" />   
+
+      <script>
+        var rtspClientSession;
+        var mypause = ()=>{
+            rtspClientSession.rtspContext.sendPause();
+        };
+
+        var stop = ()=>{
+            rtspClientSession.rtspContext.sendTeardown();
+        };
+      </script>
+   </body>
+
+</html>

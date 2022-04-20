@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>  
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <title>flv.js demo</title>
+    <script src="./core/mse-controller.js"></script>
+    <script src="./core/mse-events.js"></script>
+    <script src="./util/events.js"></script>
+    <script src="./muxer/mp4-muxer.js"></script>
+    <script src="./muxer/muxer-events.js"></script>
+    <script src="./demuxer/ffmpeg-demuxer.js"></script>
+    <script src="./demuxer/demuxer-event.js"></script>
+    <script src="./lib/libremuxer.js"></script>
+    <script src="./resource/WebPacket.js"></script>
+    <script src="./resource/WebStream.js"></script>
+    <script src="./io/loader.js"></script>
+    <script src="./io/xhr-loader.js"></script>
+</head>
+<body>
+    <video id="v" autoplay controls width="720" height="360">
+        您的浏览器不支持 video 标签。
+    </video>
+<script>
+
+    var assetURL = 'http://192.168.1.103:8080/h5player/xiamu.flv';
+    // Need to be specific for Blink regarding codecs
+
+    var video = document.getElementById('v');
+
+    let mse_ctl = new MSEController;
+
+    Module.onRuntimeInitialized = async _ => {
+        var io = new XHRLoader;
+        var demuxer = new FFmpegDemuxer;
+        var muxer = new MP4Muxer;
+
+        mse_ctl.on(MSEEvents.SOURCE_OPEN, function(){
+            console.log("open success");
+        })
+
+        mse_ctl.on(MSEEvents.ERROR, function(e){
+            console.log("error: ", e.msg);
+        })
+
+        mse_ctl.attachMediaElement(video)
+
+        demuxer.onLoadedStream = muxer.initMuxer.bind(muxer);
+        demuxer.onLoadedPacket = muxer.addPacket.bind(muxer);
+
+        demuxer.on(DemuxerEvents.INIT_ERROR, function(e) {
+            console.log("init demuxer error: ", e);
+        });
+
+        demuxer.on(DemuxerEvents.INIT_SUCCESS, function(e) {
+            console.log("init demuxer success.");
+        });
+
+        demuxer.on(DemuxerEvents.DEMUXER_EOF, function(e) {
+            muxer.generateTrailer();
+            mse_ctl.endOfStream();
+        });
+
+        muxer.onInitSegment = function(initSegment) {
+            mse_ctl.appendInitSegment(initSegment, muxer.getMimeCodec());
+        };
+
+        muxer.onMediaSegment = function(mediaSegment) {
+            mse_ctl.appendMediaSegment(mediaSegment);
+        }
+
+        muxer.on(MuxerEvents.INIT_ERROR, function(e) {
+            console.log("init muxer error: ", e);
+        });
+        muxer.on(MuxerEvents.GENERATE_HEADER_ERROR, function(e) {
+            console.log("generate header error: ", e);
+        });
+        muxer.on(MuxerEvents.MUX_PACKET_ERROR, function(e) {
+            console.log("mux packet error: ", e);
+        });
+        muxer.on(MuxerEvents.GENERATE_TRAILET_ERROR, function(e) {
+            console.log("generate trailer: ", e);
+        })
+
+        io._onDataArrival = function(buffer) {
+            demuxer.appendData(new Uint8Array(buffer));
+        };
+
+        io.open(assetURL);
+
+        console.log("over")
+    }
+ 
+</script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>  
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <title>flv.js demo</title>
+    <script src="./core/mse-controller.js"></script>
+    <script src="./core/mse-events.js"></script>
+    <script src="./util/events.js"></script>
+</head>
+<body>
+    <video id="v" autoplay controls width="720" height="360">
+        您的浏览器不支持 video 标签。
+    </video>
+<script>
+
+    var assetURL = 'http://192.168.1.103:8080/h5player/xiamu.mp4';
+    // Need to be specific for Blink regarding codecs
+    // ./mp4info frag_bunny.mp4 | grep Codec
+    var mimeCodec = 'video/mp4;codecs="avc1.640015,mp4a.40.2"';
+    // var mimeCodec = 'video/mp4;codecs="avc1.4d0029"';
+
+    var video = document.getElementById('v');
+
+    let mse_ctl = new MSEController;
+    var buffer;
+    var xhr = new XMLHttpRequest;
+    xhr.open('GET', assetURL, true);
+    xhr.responseType = 'arraybuffer';
+    xhr.onload = function() {
+        buffer = xhr.response
+        mse_ctl.on(MSEEvents.SOURCE_OPEN, function(){
+            console.log("open success")
+        })
+        mse_ctl.appendInitSegment(buffer, mimeCodec)
+        mse_ctl.attachMediaElement(video)
+    }
+    xhr.send();
+
+    
+</script>
+</body>
+</html>
