@@ -85,7 +85,7 @@ static GLfloat proj[] = {
 
 
 WebGLYUVRender::WebGLYUVRender(std::string target,int nWidth,int nHeight)
-        :m_target(target)
+        :m_target("#"+target)
 {
     initializeWebGL(nWidth,nHeight);
 }
@@ -99,7 +99,7 @@ void WebGLYUVRender::initializeWebGL(int nWidth,int nHeight)
     emscripten_set_canvas_element_size(m_target.c_str(),nWidth,nHeight);
     EmscriptenWebGLContextAttributes attr;
     emscripten_webgl_init_context_attributes(&attr);
-    attr.alpha = attr.depth = attr.stencil = attr.antialias = attr.preserveDrawingBuffer = attr.failIfMajorPerformanceCaveat = 0;
+    attr.alpha = attr.depth = attr.stencil = attr.antialias = attr.preserveDrawingBuffer = attr.powerPreference = attr.failIfMajorPerformanceCaveat = 0;
     attr.enableExtensionsByDefault = 1;
     attr.premultipliedAlpha = 0;
     attr.majorVersion = 1;

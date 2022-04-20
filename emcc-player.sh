@@ -11,7 +11,6 @@ emcc --bind \
 	guid/guids.cpp \
 	webrender/WebGLYUVRender.cpp \
 	webrender/WebALRender.cpp \
-	-lopenal \
 	BMIMediaPlayer/playerplugins/Muxer/ffmpegMuxer/muxerffmpeg.cpp \
 	BMIMediaPlayer/playerplugins/Resource/ffmpegPacket/packetffmpeg*.cpp \
 	BMIMediaPlayer/playerplugins/Resource/ffmpegStream/streamffmpeg*.cpp \
@@ -20,7 +19,6 @@ emcc --bind \
 	ffmpeg/lib/libavutil.a \
 	-O3 \
 	-s WASM=1 \
-	-s ASSERTIONS=1 \
-	-s EXTRA_EXPORTED_RUNTIME_METHODS='["cwrap"]' \
+	-s EXPORTED_RUNTIME_METHODS='["cwrap"]' \
 	-s TOTAL_MEMORY=${TOTAL_MEMORY} \
 	-o webplayer/webplayer/lib/libplayer.js 
