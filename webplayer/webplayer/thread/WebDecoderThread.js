@@ -38,6 +38,7 @@ function initDecoder(stream){
     if (errorCode != Module.IDecodeError.NoError) {
         console.log('init decoder error');
     }
+    console.log('init decoder success');
     streamFFmpeg.Release();
     return errorCode;
 }
