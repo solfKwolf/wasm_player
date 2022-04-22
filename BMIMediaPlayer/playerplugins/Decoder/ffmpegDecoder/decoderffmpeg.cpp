@@ -361,10 +361,11 @@ int DecoderFFmpeg::openCodec(bool needHardware, AVCodecContext **ppAvCodecCtx, I
         return -1;
     AVRational timebase{spStream->getTimebase().num, spStream->getTimebase().den};
     av_codec_set_pkt_timebase(*ppAvCodecCtx, timebase);
-    AVDictionary *opts = nullptr;
-    av_dict_set(&opts, "threads", "auto", 0);
-    int ret = avcodec_open2(*ppAvCodecCtx, (*ppAvCodecCtx)->codec, &opts);
-    av_dict_free(&opts);
+    // AVDictionary *opts = nullptr;
+    // av_dict_set(&opts, "threads", "auto", 0);
+    (*ppAvCodecCtx)->thread_count = 16;
+    int ret = avcodec_open2(*ppAvCodecCtx, nullptr, nullptr);
+    // av_dict_free(&opts);
     return ret;
 }
 

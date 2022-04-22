@@ -7,6 +7,7 @@
   <title>Compile C to WebAssembly</title>
   <script src="./webplayer/resource/WebPacket.js"></script>
   <script src="./webplayer/resource/WebStream.js"></script>
+  <script src="./webplayer/resource/WebFrame.js"></script>
   <script src="./rtspclient/common.js"></script>
   <script src="./webplayer/lib/libplayer.js"></script>
   <script type="module">
@@ -40,8 +41,7 @@
   <script >
     var download;
     var playerController;
-    let rtspurl = "rtsp://admin:MThd123456@172.18.3.139:554/h264/ch1/sub/av_stream"
-    // let rtspurl = "rtsp://admin:HK123456@192.168.12.16:554";
+    let rtspurl = "rtsp://admin:duomeiti01@172.19.16.114:554/Streaming/Channels/101"
 
     function upload(input) {
       playerController.loadFile(input);
@@ -54,7 +54,7 @@
 
     function PlayRtsp() {
       playerController.PlayRtsp("ws://127.0.0.1:8082/websocket", rtspurl);
-      // playerController.autoSpeed();
+      playerController.autoSpeed();
     }
 
     function TogglePause(){

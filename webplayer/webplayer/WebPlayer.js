@@ -272,7 +272,7 @@ export class WebPlayer {
         if(!this.isRtspStream){
             this.demuxPakcet();
         }
-        data.webFrame.frameData = null; 
+        data.webFrame.frameData = null;
     }
 
     renderAudioFrame(data) {
@@ -280,8 +280,10 @@ export class WebPlayer {
             this.callSetAudioData(data.webFrame.frameData);
         if(!this.isRtspStream){
             this.demuxPakcet();
-        } 
-        data.webFrame.frameData = null;
+        }
+        if (!data.isDiscard) {
+            data.webFrame.frameData = null;
+        }
     }
 
     positionChange(position) {

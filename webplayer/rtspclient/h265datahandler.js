@@ -74,7 +74,6 @@ export class H265DataHandle{
         let naluType = (code & 0x7e) >> 1;
 
         let isEnable = false;
-        console.log(naluType)
         if((naluType >= 16 && naluType <= 21) || (naluType >= 32 && naluType <= 40)){
             isEnable = true
         }

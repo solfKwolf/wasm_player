@@ -5,7 +5,7 @@ emcc --bind \
 	-std=c++11 \
 	-I ffmpeg/include \
 	-I BMIMediaPlayer/interfaces \
-	webdecoder/*.cpp \
+	webdecoder/webdecoder.cpp \
 	webresource/webpacket.cpp \
 	webresource/webstream.cpp \
 	webresource/webframe.cpp \
